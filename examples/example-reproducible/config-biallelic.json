@@ -8,5 +8,7 @@
     "earlyStopPopulation": 100,
     "mutationSpeed": 0.1,
     "biallelic": true,
-    "biallelicInit": "diffdist"    
+    "biallelicInit": "diffdist",
+    "tripletsGeneration": "combined_likelihood",
+    "parsingMethod": "B"
 }
