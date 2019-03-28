@@ -208,6 +208,7 @@ def reconstruct_TMC(calling, path_simulation_output, root_cell_notation, scoring
         .set_index(0) \
         .rename(columns={'index': 'cellname'})
     df_mapping.index.name = 'index'
+    df_mapping.sort_values(by='cellname', inplace=True)
     df_mapping.to_csv(path_triplets_list_id_name_csv)
 
     # normalize triplet distance if uri10
