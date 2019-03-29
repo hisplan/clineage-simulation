@@ -45,8 +45,8 @@ decorator                 4.1.2                    py35_0    anaconda
 DendroPy                  4.3.0                     <pip>
 distributed               1.19.3                    <pip>
 distributed               1.20.2                   py35_0    anaconda
-Django                    1.9.8                     <pip>
 django                    2.0.5            py35hd476221_0    anaconda
+Django                    1.9.8                     <pip>
 django-extensions         1.6.7                    py35_0    conda-forge
 django-js-asset           0.1.1                     <pip>
 django-model-utils        3.0.0                     <pip>
@@ -93,8 +93,8 @@ ipython_genutils          0.2.0                    py35_0    anaconda
 ipywidgets                7.1.0                    py35_0    anaconda
 iso8601                   0.1.12                    <pip>
 jbig                      2.1                  hdba287a_0    anaconda
-jedi                      0.11.1                    <pip>
 jedi                      0.10.2                   py35_0    anaconda
+jedi                      0.11.1                    <pip>
 jinja2                    2.10                     py35_0    conda-forge
 jpeg                      9b                            2    conda-forge
 json-c                    0.12.1                        0    conda-forge
@@ -160,8 +160,8 @@ nbformat                  4.4.0                    py35_0    anaconda
 ncurses                   6.0                  h06874d7_1    anaconda
 networkx                  2.0                      py35_1    conda-forge
 nose                      1.3.7                    py35_2    conda-forge
-notebook                  5.2.2                    py35_1    conda-forge
 notebook                  5.7.6                     <pip>
+notebook                  5.2.2                    py35_1    conda-forge
 numpy                     1.15.1           py35h1d66e8a_0    anaconda
 numpy-base                1.15.1           py35h81de0dd_0    anaconda
 openjpeg                  2.3.0                h05c96fa_1    anaconda
@@ -196,8 +196,8 @@ primer3-py                0.5.1                    py35_0    bioconda
 proj4                     4.9.3                         5    conda-forge
 prometheus-client         0.6.0                     <pip>
 prompt_toolkit            1.0.15                   py35_0    anaconda
-psutil                    5.4.0                    py35_0    conda-forge
 psutil                    5.4.3                     <pip>
+psutil                    5.4.0                    py35_0    conda-forge
 ptyprocess                0.5.2                    py35_0    anaconda
 pyarrow                   0.8.0                    py35_0    conda-forge
 pyasn1                    0.3.7                      py_0    conda-forge
@@ -214,14 +214,14 @@ pyramid                   1.5.7                    py35_0    anaconda
 pysam                     0.9.0                    py35_1    bioconda
 pysocks                   1.6.8                    py35_0    anaconda
 python                    3.5.5                hc3d631a_3    anaconda
-python-dateutil           2.3                      py35_0    bioconda
 python-dateutil           2.6.1                     <pip>
+python-dateutil           2.3                      py35_0    bioconda
 pytz                      2017.3                     py_2    conda-forge
 pyvcf                     0.6.8                    py35_0    bioconda
 pyvirtualdisplay          0.2.1                    py35_0    conda-forge
 pyyaml                    3.12                     py35_1    conda-forge
-pyzmq                     16.0.2           py35h4be1f71_2    anaconda
 pyzmq                     18.0.1                    <pip>
+pyzmq                     16.0.2           py35h4be1f71_2    anaconda
 qt                        5.9.4                h4e5bff0_0    anaconda
 qtconsole                 4.3.1                    py35_0    anaconda
 readline                  7.0                  hac23ff0_3    anaconda
@@ -235,8 +235,8 @@ scikit-learn              0.20.0           py35h4989274_0    anaconda
 scipy                     1.1.0            py35hfa4b5c9_1    anaconda
 seaborn                   0.9.0                    py35_0    anaconda
 Send2Trash                1.4.2                     <pip>
-setuptools                38.5.0                    <pip>
 setuptools                36.5.0           py35ha8c1747_0    anaconda
+setuptools                38.5.0                    <pip>
 simplegeneric             0.8.1                    py35_0    anaconda
 simplejson                3.8.1                    py35_0    anaconda
 sip                       4.19.8           py35hf484d3e_0    anaconda
@@ -253,8 +253,8 @@ system                    5.8                           2    anaconda
 tbb                       4.4_20150728                  0    bioconda
 tblib                     1.3.2                    py35_0    anaconda
 terminado                 0.8.1                    py35_0    anaconda
-testpath                  0.3.1                    py35_0    anaconda
 testpath                  0.3.1                     <pip>
+testpath                  0.3.1                    py35_0    anaconda
 tk                        8.6.8                hbc83047_0    anaconda
 toolz                     0.8.2                      py_2    conda-forge
 tornado                   4.5.2                    py35_0    anaconda
