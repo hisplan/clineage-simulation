@@ -8,7 +8,8 @@ import tempfile
 
 from src import const
 import sys
-sys.path.append("/home/{}/clineage/".format(os.environ['USER']))
+
+sys.path.append("/home/{}/clineage/".format(os.environ["USER"]))
 import clineage.wsgi
 
 # --> extracted from production
@@ -16,9 +17,7 @@ import csv
 import networkx as nx
 import functools
 
-sys.path.append(
-    '/home/{}/projects/triplets/'.format(os.environ['USER'])
-)
+sys.path.append("/home/{}/projects/triplets/".format(os.environ["USER"]))
 from TMC_CLI import parse_mutations_table, paired_triplets_generator, format_triplet
 from triplets_input_generators.splittable_bi import solved_splittable_bi_generator
 from triplets_input_generators.full_biallelic import solved_biallelic_generator
@@ -32,17 +31,17 @@ class NoSuchTripletsGenerator(Exception):
 
 
 def get_triplets_generator(triplets_generator_name):
-    if triplets_generator_name == 'mono':
+    if triplets_generator_name == "mono":
         return solved_mono_generator
-    if triplets_generator_name == 'splitable':
+    if triplets_generator_name == "splitable":
         return solved_splittable_bi_generator
-    if triplets_generator_name == 'full_bi':
+    if triplets_generator_name == "full_bi":
         return solved_biallelic_generator
-    if triplets_generator_name == 'combined_likelihood':
+    if triplets_generator_name == "combined_likelihood":
         return combined_liklihood_generator
-    if triplets_generator_name == 'splitable_then_full':
+    if triplets_generator_name == "splitable_then_full":
         return splitable_then_full
-    if triplets_generator_name == 'full_then_splittable':
+    if triplets_generator_name == "full_then_splittable":
         return functools.partial(splitable_then_full, reversed=True)
     raise NoSuchTripletsGenerator(triplets_generator_name)
 
@@ -55,12 +54,9 @@ def transpose_dict(d):
     return td
 
 
-def add_root_to_dict(
-        textual_mutation_dict,
-        cells_to_be_used_as_root,
-):
+def add_root_to_dict(textual_mutation_dict, cells_to_be_used_as_root):
     new_d = dict()
-    if cells_to_be_used_as_root == ['Ave']:
+    if cells_to_be_used_as_root == ["Ave"]:
         cells_to_be_used_as_root = set(
             c for loc in textual_mutation_dict for c in textual_mutation_dict[loc]
         )
@@ -69,22 +65,18 @@ def add_root_to_dict(
     root_collection = dict()
     for loc in textual_mutation_dict:
         for c in textual_mutation_dict[loc].keys() & cells_to_be_used_as_root:
-            root_collection.setdefault(loc, []).append(
-                textual_mutation_dict[loc][c]
-            )
+            root_collection.setdefault(loc, []).append(textual_mutation_dict[loc][c])
     for loc in root_collection:
         val = int(np.median(root_collection[loc]))
-        new_d.setdefault(loc, dict())['root'] = val
+        new_d.setdefault(loc, dict())["root"] = val
         new_d[loc].update(textual_mutation_dict[loc])
     return new_d
 
 
 def get_cells_and_root(mutation_table_path_for_triplets):
-    calling = parse_mutations_table(
-        mutation_table_path_for_triplets, inverse=True
-    )
+    calling = parse_mutations_table(mutation_table_path_for_triplets, inverse=True)
     # Verify the presence of a root cell in the input data.
-    possible_roots = [cell for cell in calling if 'root' in cell]
+    possible_roots = [cell for cell in calling if "root" in cell]
     assert len(possible_roots) == 1
     root_label = possible_roots[0]
     root = (root_label, calling[root_label])
@@ -99,17 +91,17 @@ def get_cells_and_root(mutation_table_path_for_triplets):
 
 def print_mutation_dict_to_file(textual_mutation_dict, output_path):
     loci_columns = {
-        msl for sr in textual_mutation_dict for msl in textual_mutation_dict[sr]}
-    with open(output_path, 'w') as f:
-        fieldnames = ['names'] + list(loci_columns)
-        writer = csv.DictWriter(f, fieldnames=fieldnames, dialect='excel-tab')
+        msl for sr in textual_mutation_dict for msl in textual_mutation_dict[sr]
+    }
+    with open(output_path, "w") as f:
+        fieldnames = ["names"] + list(loci_columns)
+        writer = csv.DictWriter(f, fieldnames=fieldnames, dialect="excel-tab")
         writer.writeheader()
         for sr in textual_mutation_dict:
-            row_dict = {'names': sr}
+            row_dict = {"names": sr}
             row_dict.update(textual_mutation_dict[sr])
             row_dict.update(
-                {loc: 'NaN' for loc in loci_columns -
-                    textual_mutation_dict[sr].keys()}
+                {loc: "NaN" for loc in loci_columns - textual_mutation_dict[sr].keys()}
             )
             writer.writerow(row_dict)
 
@@ -117,9 +109,10 @@ def print_mutation_dict_to_file(textual_mutation_dict, output_path):
 def map_cell_ids_for_sagi(rtd):
     rtd_for_sagi = dict()
     cell_id_map_for_sagi = dict()
-    for i, cell_id in enumerate(rtd.keys()):
+    # sort to make it reproducible
+    for i, cell_id in enumerate(sorted(list(rtd.keys()))):
         cell_id_map_for_sagi[cell_id] = i
-        if 'root' in cell_id:
+        if "root" in cell_id:
             rtd_for_sagi[cell_id] = rtd[cell_id]
             continue
         rtd_for_sagi[i] = rtd[cell_id]
@@ -127,84 +120,83 @@ def map_cell_ids_for_sagi(rtd):
 
 
 def simplified_triplets_calculation(
-        textual_mutation_dict,
-        triplets_file,
-        triplets_generator_name,
-        score_threshold=0,  # print scores
-        choosing_method='mms',
-        scoring_method='uri10',
-        printscores=True,
-        loci_filter='ncnr',
-        sabc=0,
-        tripletsnumber=5000000,
-        homozygosity=False
+    textual_mutation_dict,
+    triplets_file,
+    triplets_generator_name,
+    score_threshold=0,  # print scores
+    choosing_method="mms",
+    scoring_method="uri10",
+    printscores=True,
+    loci_filter="ncnr",
+    sabc=0,
+    tripletsnumber=5000000,
+    homozygosity=False,
 ):
     triplets_generator = get_triplets_generator(triplets_generator_name)
+
     rtd = transpose_dict(textual_mutation_dict)
     rtd_for_sagi, cell_id_map_for_sagi = map_cell_ids_for_sagi(rtd)
     d = transpose_dict(rtd_for_sagi)
 
     print("Generating triplets ({})...".format(triplets_generator_name))
 
-    with open(triplets_file, 'w') as f:
+    with open(triplets_file, "w") as f:
 
-        if triplets_generator_name == 'splitable_then_full' or triplets_generator_name == 'full_then_splittable':
+        if (
+            triplets_generator_name == "splitable_then_full"
+            or triplets_generator_name == "full_then_splittable"
+        ):
 
             for loc in d:
                 d_loc = {loc: d[loc]}
                 for triplet, pair, score in triplets_generator(
-                        d_loc,
-                        n=tripletsnumber,
-                        loci_filter=loci_filter,
-                        scoring_method=scoring_method,
-                        choosing_method=choosing_method,
-                        threshold=score_threshold):
+                    d_loc,
+                    n=tripletsnumber,
+                    loci_filter=loci_filter,
+                    scoring_method=scoring_method,
+                    choosing_method=choosing_method,
+                    threshold=score_threshold,
+                ):
                     f.write(
                         format_triplet(
                             triplet,
                             pair,
                             score,
                             print_scores=printscores,
-                            with_data=False
+                            with_data=False,
                         )
                     )
 
-        elif triplets_generator_name == 'combined_likelihood':
+        elif triplets_generator_name == "combined_likelihood":
 
             for triplet, pair, score in triplets_generator(
-                    d,
-                    n=tripletsnumber,
-                    loci_filter=loci_filter,
-                    scoring_method=scoring_method,
-                    choosing_method=choosing_method,
-                    threshold=score_threshold,
-                    homo=homozygosity):
+                d,
+                n=tripletsnumber,
+                loci_filter=loci_filter,
+                scoring_method=scoring_method,
+                choosing_method=choosing_method,
+                threshold=score_threshold,
+                homo=homozygosity,
+            ):
                 f.write(
                     format_triplet(
-                        triplet,
-                        pair,
-                        score,
-                        print_scores=printscores,
-                        with_data=False
+                        triplet, pair, score, print_scores=printscores, with_data=False
                     )
                 )
 
         else:
 
             for triplet, pair, score in triplets_generator(
-                    d,
-                    n=tripletsnumber,
-                    loci_filter=loci_filter,
-                    scoring_method=scoring_method,
-                    choosing_method=choosing_method,
-                    threshold=score_threshold):
+                d,
+                n=tripletsnumber,
+                loci_filter=loci_filter,
+                scoring_method=scoring_method,
+                choosing_method=choosing_method,
+                threshold=score_threshold,
+            ):
                 f.write(
                     format_triplet(
-                        triplet,
-                        pair,
-                        score,
-                        print_scores=printscores,
-                        with_data=False
+                        triplet, pair, score, print_scores=printscores, with_data=False
                     )
                 )
 
@@ -262,16 +254,16 @@ def triplets_to_df(path_raw):
 
     tmp = []
 
-    with open(path_raw, 'rt') as fin:
+    with open(path_raw, "rt") as fin:
         data = fin.read()
         # e.g.
         # 8,0|3:0.5774 18,8|11:1.4142 15,0|9:0.3416 6,0|3:1.2041
-        triplets = data.split(' ')
+        triplets = data.split(" ")
         for triplet in triplets:
             try:
                 # e.g.
                 # 1,12|11:0.8165
-                match = re.search(r'(\d+),(\d+)\|(\d+):(.*)', triplet)
+                match = re.search(r"(\d+),(\d+)\|(\d+):(.*)", triplet)
                 if match:
                     sa, sb, sc, dist = match.groups()
                     sa = int(sa)
@@ -279,34 +271,31 @@ def triplets_to_df(path_raw):
                     sc = int(sc)
                     dist = float(dist)
 
-                    tmp.append(
-                        [sa, sb, sc, dist]
-                    )
+                    tmp.append([sa, sb, sc, dist])
             except:
                 raise Exception(triplet)
 
-    return pd.DataFrame(
-        tmp, columns=['sai', 'sbi', 'sci', 'dist']
-    )
+    return pd.DataFrame(tmp, columns=["sai", "sbi", "sci", "dist"])
 
 
 def df_to_triplets(df, path_out):
-
     def convert_to_triplet(item):
-        return '{},{}|{}:{}'.format(int(item.sai), int(item.sbi), int(item.sci), item.dist)
+        return "{},{}|{}:{}".format(
+            int(item.sai), int(item.sbi), int(item.sci), item.dist
+        )
 
     ss_triplets = df.apply(convert_to_triplet, axis=1)
 
-    with open(path_out, 'wt') as stream:
+    with open(path_out, "wt") as stream:
         for row in ss_triplets:
-            stream.write(row + ' ')
+            stream.write(row + " ")
 
-        stream.write('\n')
+        stream.write("\n")
 
 
 def normalize_triplet_dist(path_triplets_list_raw):
 
-    copyfile(path_triplets_list_raw, path_triplets_list_raw + '.bak')
+    copyfile(path_triplets_list_raw, path_triplets_list_raw + ".bak")
 
     df = triplets_to_df(path_triplets_list_raw)
 
@@ -314,8 +303,7 @@ def normalize_triplet_dist(path_triplets_list_raw):
     # reshape(-1, 1) -> one column, x rows
     min_max_scaler = preprocessing.MinMaxScaler()
 
-    dist_normalized = min_max_scaler.fit_transform(
-        df.dist.values.reshape(-1, 1))
+    dist_normalized = min_max_scaler.fit_transform(df.dist.values.reshape(-1, 1))
     df.dist = np.round(dist_normalized, 4)
 
     df_to_triplets(df, path_triplets_list_raw)
