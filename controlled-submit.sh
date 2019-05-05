@@ -6,24 +6,43 @@ then
     exit 1
 fi
 
+# default
+max_running=50
+
+# by default, run everything (tree simulation, genotyping, reconstruction)
+run_flag='0 0 0';
+
+# choose a default SGE queue based on hostname
+hostname=`hostname -s`
+if [ "$hostname" == "mcluster01" ]
+then
+    queue_name='all.q'
+fi
+if [ "$hostname" == "mcluster03" ]
+then
+    queue_name='all2.q'
+fi
+
 usage()
 {
 cat << EOF
 USAGE: `basename $0` [options]
 
     -r  absolute path to simulation root where seed-* are placed
-    -s  simulate tree only (no reconstruction)
+    -n  max number of jobs that can run in parallel
+    -f  run flag (default: "${run_flag}")
+    -q  queue name (default: "${queue_name}")
 
 EOF
 }
 
-simulate_tree_only='';
-
-while getopts "r:sh" OPTION
+while getopts "r:q:n:f:h" OPTION
 do
     case $OPTION in
         r) path_root=$OPTARG ;;
-        s) simulate_tree_only='-s' ;;
+        q) queue_name=$OPTARG ;;
+        n) max_running=$OPTARG ;;
+        f) run_flag=$OPTARG ;;
         h) usage; exit 1 ;;
         *) usage; exit 1 ;;
     esac
@@ -34,6 +53,7 @@ then
     usage
     exit 1
 fi
+
 
 seeds=`find ${path_root} -maxdepth 1 -name "seed-*" -type d`
 
@@ -51,8 +71,8 @@ do
 
         while true
         do
-            counter=`qstat -q 32g2.q | tail -n +3 | wc -l`
-            if [ $counter -le 20 ] || [ $counter -eq 20 ]
+            counter=`qstat -q ${queue_name} | tail -n +3 | wc -l`
+            if [ $counter -le $max_running ] || [ $counter -eq $max_running ]
             then
                 break
             fi
@@ -64,8 +84,9 @@ do
         ./sge-submit.sh \
             -n ${project_name} \
             -p ${path_project} \
-            -q 32g2.q \
-            -c ${case} ${simulate_tree_only}
+            -q ${queue_name} \
+            -c ${case} \
+            -f "${run_flag}"
 
         # you need to wait until sge completes submission
         sleep 10
